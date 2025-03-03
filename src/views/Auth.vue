@@ -22,6 +22,7 @@
 import { ref } from 'vue'
 import axios from 'axios'
 import Swal from 'sweetalert2/dist/sweetalert2.js'
+import environments from '@/environments/api.js'
 
 const user = ref({
     Name: '111',
@@ -31,8 +32,9 @@ const user = ref({
 })
 
 const login = async() => {
-    const response = await axios.post('http://localhost:5075/api/auth/login', user.value).then(response => {
+    const response = await axios.post(`${environments.baseUrl}api/auth/login`, user.value).then(response => {
         if(response.data.token) {
+        localStorage.removeItem('token')
         localStorage.setItem('token', response.data.token)
         window.location.href = '/home'
     }

@@ -66,9 +66,10 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import Swal from 'sweetalert2/dist/sweetalert2.js'
+import environments from '@/environments/api.js'
 
 const users = ref([])
-const baseUrl = "http://localhost:5075/"
+const baseUrl = environments.baseUrl
 const visible = ref(false)
 const user = ref({})
 
@@ -96,7 +97,11 @@ const destroy = async (id) => {
     denyButtonText: `No Eliminar`
   }).then(async (result) => {
     if (result.isConfirmed) {
-      const response = await axios.delete(`${baseUrl}api/user/${id}`)
+      const response = await axios.delete(`${baseUrl}api/user/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
       if (response.status === 204) {
         Swal.fire('Usuario eliminado', '', 'success')
         datatable()
@@ -125,7 +130,11 @@ const store = async () => {
       Swal.fire('Error', 'No se pudo actualizar el usuario', 'error')
     }
   } else {
-    const response = await axios.post(`${baseUrl}api/user`, user.value)
+    const response = await axios.post(`${baseUrl}api/user`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }, user.value)
     if (response.status === 201) {
       Swal.fire('Usuario creado', '', 'success')
       datatable()
